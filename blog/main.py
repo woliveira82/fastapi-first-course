@@ -68,3 +68,13 @@ def delete_a_blog_by_id(id: int, db: Session=Depends(get_db)):
     blog.delete()
     db.commit()
     return 'deleted'
+
+
+@app.post('/user', status_code=status.HTTP_201_CREATED)
+def create_user(request: schemas.User, db: Session=Depends(get_db)):
+    new_user = models.User(**dict(request))
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return new_user
+
