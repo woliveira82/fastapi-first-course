@@ -1,4 +1,7 @@
+from typing import Optional
+
 from fastapi import FastAPI
+from pydantic import BaseModel
 
 app = FastAPI()
 
@@ -7,6 +10,17 @@ app = FastAPI()
 def list_all_blogs(sort, published: bool = True, limit: int = 10):
     phrase = f'{limit} blogs from database' if published else f'{limit} published blogs from database'
     return {'data': [phrase]}
+
+
+class Blog(BaseModel):
+    title: str
+    body: str
+    published: Optional[bool]
+
+
+@app.post('/blogs')
+def create_a_blog(blog: Blog):
+    return {'data': f'New blog created with title: {blog.title}'}
 
 
 @app.get('/blogs/unpublished')
