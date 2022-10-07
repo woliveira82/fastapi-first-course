@@ -24,13 +24,13 @@ def create_a_blog(request: schemas.Blog, db: Session=Depends(get_db)):
     return new_blog
 
 
-@app.get('/blog')
+@app.get('/blog', response_model=list[schemas.ShowBlog])
 def list_all_blogs(db: Session=Depends(get_db)):
     blogs = db.query(models.Blog).all()
     return blogs
 
 
-@app.get('/blog/{id}')
+@app.get('/blog/{id}', response_model=schemas.ShowBlog)
 def get_a_blog_by_id(id: int, db: Session=Depends(get_db)):
     blog = db.query(models.Blog).filter(models.Blog.id == id).first()
     if not blog:
