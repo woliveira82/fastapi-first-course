@@ -31,7 +31,7 @@ def list_all_blogs(db: Session=Depends(get_db)):
 
 
 @app.get('/blog/{id}')
-def list_all_blogs(id: int, response: Response, db: Session=Depends(get_db)):
+def get_a_blog_by_id(id: int, response: Response, db: Session=Depends(get_db)):
     blog = db.query(models.Blog).filter(models.Blog.id == id).first()
     if not blog:
         raise HTTPException(
@@ -40,3 +40,12 @@ def list_all_blogs(id: int, response: Response, db: Session=Depends(get_db)):
         )
 
     return blog
+
+
+@app.delete('/blogs/{id}', status_code=status.HTTP_204_NO_CONTENT)
+def delete_a_blog_by_id(id: int, response: Response, db: Session=Depends(get_db)):
+    db.query(models.Blog).filter(
+        models.Blog.id == id
+    ).delete(synchronize_session=False)
+    db.commit()
+    return 'deleted'
