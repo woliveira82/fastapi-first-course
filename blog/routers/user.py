@@ -7,7 +7,7 @@ from ..utils import bcrypt
 
 router = APIRouter(
     prefix='/users',
-    tags=['users'] 
+    tags=['Users'] 
 )
 
 

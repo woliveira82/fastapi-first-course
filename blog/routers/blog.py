@@ -3,16 +3,20 @@ from sqlalchemy.orm import Session
 
 from .. import models, schemas
 from ..database import SessionLocal, engine, get_db
-from ..utils import bcrypt
+from ..utils import get_current_user
 
 router = APIRouter(
     prefix='/blogs',
-    tags=['blogs']
+    tags=['Blogs']
 )
 
 
 @router.post('/', status_code=status.HTTP_201_CREATED)
-def create_a_blog(request: schemas.Blog, db: Session=Depends(get_db)):
+def create_a_blog(
+    request: schemas.Blog, 
+    db: Session=Depends(get_db),
+    current_user: schemas.User = Depends(get_current_user)
+):
     new_blog = models.Blog(
         title=request.title,
         body=request.body,
@@ -25,7 +29,10 @@ def create_a_blog(request: schemas.Blog, db: Session=Depends(get_db)):
 
 
 @router.get('/', response_model=list[schemas.ShowBlog])
-def list_all_blogs(db: Session=Depends(get_db)):
+def list_all_blogs(
+    db: Session=Depends(get_db),
+    current_user: schemas.User = Depends(get_current_user)
+):
     blogs = db.query(models.Blog).all()
     return blogs
 
